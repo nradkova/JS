@@ -7,14 +7,7 @@ function solve(...input) {
     city.collectTaxes = collectTaxes;
     city.applyGrowth = applyGrowth;
     city.applyRecession = applyRecession;
-
-    // city.collectTaxes();
-    // console.log(city.treasury);
-    // city.applyGrowth(5);
-    // console.log(city.population);
-    // city.applyRecession(5);
-    // console.log(city.treasury);
-
+    
     return city;
 
     function collectTaxes() {

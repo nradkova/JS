@@ -1,12 +1,8 @@
 function factory(library, orders) {
 
-    let products = [];
-
+    const products = [];
     orders.forEach(order => {
-        
-        let currentOrder = {};
-
-        currentOrder.name = order.template.name;
+        const currentOrder = Object.assign({},order.template);
         order.parts.forEach(part => {
             currentOrder[part] = library[part];
         });

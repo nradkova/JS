@@ -7,7 +7,10 @@ function solve(input) {
             acc[prevEl] = Number(el);
         }
         return acc;
-    }, {});
+    },{});
 }
 
-console.log(solve(['Yoghurt', '48', 'Rise', '138', 'Apple', '52']));
+console.log(solve([
+    'Yoghurt', '48', 
+    'Rise', '138', 
+    'Apple', '52']));

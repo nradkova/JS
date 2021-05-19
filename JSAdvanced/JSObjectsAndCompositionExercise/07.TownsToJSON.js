@@ -10,7 +10,7 @@ function solve(input) {
         line = parseLine(line);
         const currentTown = {};
         line.forEach((el, index) => {
-            el = !isNaN() ? Number(Number(el).toFixed(2)) : el;
+            el = !isNaN(el) ? Number(Number(el).toFixed(2)) : el;
             currentTown[townsProps[index]] = el;
         });
         towns.push(currentTown);

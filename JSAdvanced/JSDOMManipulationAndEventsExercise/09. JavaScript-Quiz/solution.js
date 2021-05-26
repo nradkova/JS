@@ -27,7 +27,7 @@ function solve() {
           sections[index + 1].style.display='block';
 
         } else {
-          resultField.textContent = rightAnswers === 3
+          resultField.textContent = rightAnswers === Object.keys(answers).length
             ? 'You are recognized as top JavaScript fan!'
             : `You have ${rightAnswers} right answers`
           resultField.parentNode.parentNode.style.display = 'block';

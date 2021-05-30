@@ -23,26 +23,28 @@ function solve() {
         if (processor[command]) {
             processor[command](event.target);
         }
-    }
+    };
 
     function clearFunc(currentBtn) {
         currentBtn.previousElementSibling.innerHTML = '';
-    }
+    };
 
     function deleteFunc(currentBtn) {
         const li = currentBtn.parentNode;
         li.remove();
-    }
+    };
 
     function archiveFunc(currentBtn) {
         const li = currentBtn.parentNode.parentNode;
 
-        const name = li.firstChild.textContent;
-        const price = Number(li.children[2].firstChild.textContent);
-        const soldTickets = Number(li.children[2].children[1].value);
-        if (isNaN(soldTickets)) {
+        const soldTagValue = li.children[2].children[1].value;
+        if (soldTagValue===''|| isNaN(Number(soldTagValue))) {
             return;
         }
+
+        const name = li.firstChild.textContent;
+        const price = Number(li.children[2].firstChild.textContent);
+        const soldTickets = Number(soldTagValue);
 
         const toArchive = createCustomEl('li');
         toArchive.appendChild(createCustomEl('span', name));
@@ -51,7 +53,7 @@ function solve() {
 
         archiveList.appendChild(toArchive);
         moviesList.removeChild(li);
-    }
+    };
 
     function onScreenFunc() {
         let name = nameTag.value;
@@ -67,17 +69,14 @@ function solve() {
 
         const movie = createMovie(name, hall, price);
         moviesList.appendChild(movie);
-    }
+    };
 
     function areValid(name, hall, price) {
         if (name === '' || hall === '' || !price) {
             return false;
         }
-        if (name !== '' && hall !== '' && price === 0) {
-            return true;
-        }
         return true;
-    }
+    };
 
     function createMovie(name, hall, price) {
         const li = createCustomEl('li');
@@ -95,7 +94,7 @@ function solve() {
         li.appendChild(div);
 
         return li;
-    }
+    };
 
     function createCustomEl(type, content) {
         let el = document.createElement(type);
@@ -104,5 +103,5 @@ function solve() {
             ? el.value = content
             : el.textContent = content;
         return el;
-    }
+    };
 }

@@ -2,7 +2,7 @@ class Company {
     constructor() {
         this.departments = [];
     };
-    
+
     addEmployee(name, salary, position, department) {
         if ([name, salary, position, department].some(x => !x)) {
             throw new Error('Invalid input!');
@@ -10,7 +10,7 @@ class Company {
         if (salary < 0) {
             throw new Error('Invalid input!');
         };
-     
+
         if (!this.departments.some(x => x.depId === department)) {
             this.departments.push({
                 depId: department,
@@ -18,7 +18,7 @@ class Company {
                 totalSalaries: 0
             });
         };
-      
+
         this.departments.forEach(x => {
             if (x.depId === department) {
                 x.employees.push({ name, salary, position });
@@ -29,25 +29,23 @@ class Company {
     };
 
     bestDepartment() {
-        let bestSalary = 0;
+        let bestAvgSalary = 0;
         let bestDepartment = undefined;
 
         this.departments.forEach(x => {
             x.avgSalary = x.totalSalaries / x.employees.length;
-            if (x.avgSalary > bestSalary) {
+            if (x.avgSalary > bestAvgSalary) {
                 bestDepartment = x;
-                bestSalary = x.avgSalary;
+                bestAvgSalary = x.avgSalary;
             }
         });
 
-        let result = `Best Department is: ${bestDepartment.depId}\nAverage salary: ${bestDepartment.avgSalary.toFixed(2)}\n`;
-       
-        bestDepartment.employees
-            .sort((a, b) => b.salary - a.salary||a.name.localeCompare(b.name))
-            .forEach(e => {
-                result += `${e.name} ${e.salary} ${e.position}\n`;
-            })
-        return result.trim();
+        let emplList = bestDepartment.employees
+            .sort((a, b) => b.salary - a.salary || a.name.localeCompare(b.name))
+            .map(e => `${e.name} ${e.salary} ${e.position}`)
+            .join('\n');
+
+        return `Best Department is: ${bestDepartment.depId}\nAverage salary: ${bestDepartment.avgSalary.toFixed(2)}\n${emplList}`;
     };
 };
 

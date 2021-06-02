@@ -8,14 +8,14 @@ function solve(arr, criteria) {
         static compare(a, b, criteria) {
             if (typeof a[criteria] === 'string') {
                 return a[criteria].localeCompare(b[criteria]);
-            }
+            };
             if (typeof a[criteria] === 'number') {
                 return b - a;
-            }
+            };
         };
     };
     return arr
-        .map(line => { return new Ticket(...line.split('|'))})
+        .map(line => new Ticket(...line.split('|')))
         .sort((a, b) => Ticket.compare(a, b, criteria));
 };
 

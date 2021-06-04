@@ -9,7 +9,6 @@ describe('test PaymentPackage',()=>{
 
     describe('test initializing',()=>{
         it('initializing properly',()=>{
-           // const pack=new PaymentPackage('Pack',1000);
             assert.equal('Pack',pack._name);
             assert.equal(1000,pack._value);
             assert.equal(20,pack._VAT);

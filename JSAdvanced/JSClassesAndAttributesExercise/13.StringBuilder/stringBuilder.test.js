@@ -13,7 +13,7 @@ describe('test StringBuilder class',()=>{
             assert.equal('a',text._stringArray[0]);
             assert.equal(3,text._stringArray.length);
         });
-        it('initializing with undefined parameter returns empty array',()=>{
+        it('initializing with no parameter returns empty array',()=>{
             const c=new StringBuilder();
             assert.equal(0,c._stringArray.length);
         });

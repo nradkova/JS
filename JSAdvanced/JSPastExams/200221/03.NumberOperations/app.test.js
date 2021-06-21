@@ -17,7 +17,7 @@ describe('tests numberOperations', () => {
             assert.equal('The number is greater or equal to 100!', numberOperations.numberChecker(100));
             assert.equal('The number is greater or equal to 100!', numberOperations.numberChecker(101));
         })
-        it('returns NaN with non number argument', () => {
+        it('throws with non number argument', () => {
             assert.throws(()=>numberOperations.numberChecker('a'));
         })
     })

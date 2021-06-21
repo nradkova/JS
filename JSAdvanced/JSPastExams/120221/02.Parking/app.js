@@ -4,6 +4,7 @@ class Parking {
         this.vehicles = [];
         this._count = 0;
     }
+
     addCar(carModel, carNumber) {
         if (this._count >= this.capacity) {
             throw new Error("Not enough parking space.")
@@ -14,8 +15,10 @@ class Parking {
             payed: false
         });
         this._count++;
+
         return `The ${carModel}, with a registration number ${carNumber}, parked.`;
     }
+
     removeCar(carNumber) {
         const found = this.vehicles.find(c => c.carNumber === carNumber);
         if (!found) {
@@ -26,8 +29,10 @@ class Parking {
         }
         this.vehicles.splice(this.vehicles.indexOf(found), 1);
         this._count--;
+
         return `${carNumber} left the parking lot.`;
     }
+
     pay(carNumber) {
         const found = this.vehicles.find(c => c.carNumber === carNumber);
         if (!found) {
@@ -37,26 +42,29 @@ class Parking {
             throw new Error(`${carNumber}'s driver has already payed his ticket.`);
         }
         found.payed = true;
+
         return `${carNumber}'s driver successfully payed for his stay.`;
     }
-    getStatistics(carNumber){
-        if(carNumber){
+
+    getStatistics(carNumber) {
+        if (carNumber) {
             const found = this.vehicles.find(c => c.carNumber === carNumber);
-            return `${found.carModel} == ${found.carNumber} - ${found.payed ?'Has payed' : 'Not payed'}`;
+            return `${found.carModel} == ${found.carNumber} - ${found.payed ? 'Has payed' : 'Not payed'}`;
         }
-        let result=`The Parking Lot has ${this.capacity-this._count} empty spots left.\n`;
+        let result = `The Parking Lot has ${this.capacity - this._count} empty spots left.\n`;
         this.vehicles
-        .sort((a,b)=>a.carModel.localeCompare(b.carModel))
-        .forEach(c=>{
-            result+=`${c.carModel} == ${c.carNumber} - ${c.payed ?'Has payed' : 'Not payed'}\n`;
-        })
+            .sort((a, b) => a.carModel.localeCompare(b.carModel))
+            .forEach(c => {
+                result += `${c.carModel} == ${c.carNumber} - ${c.payed ? 'Has payed' : 'Not payed'}\n`;
+            })
+            
         return result.trimEnd();
     }
 }
 
-const parking = new Parking(12);
+const parking = new Parking(12);
 
-console.log(parking.addCar("Volvo t600", "TX3691CA"));
+console.log(parking.addCar("Volvo t600", "TX3691CA"));
 console.log(parking.getStatistics());
 
 console.log(parking.pay("TX3691CA"));

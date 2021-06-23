@@ -4,7 +4,7 @@ class Bank {
         this.allCustomers = [];
     }
     newCustomer(customer) {
-        const found = this.allCustomers.find(c => Number(c.personalId) === Number(customer.personalId));
+        const found = this.allCustomers.find(c => c.personalId === customer.personalId);
         if (found) {
             throw new Error(`${customer.firstName} ${customer.lastName} is already our customer!`);
         }
@@ -80,6 +80,6 @@ bank.depositMoney(4151596, 555);
 console.log(bank.withdrawMoney(6233267, 125));
 console.log(bank.customerInfo(6233267));
 
-let bank = new Bank('aa');
-bank.newCustomer({ firstName: 'Svetlin', lastName: 'Nakov', personalId: 1111111 });
-bank.newCustomer({ firstName: 'Svetlin', lastName: 'Nakov', personalId: 1111111 });
+let bank1 = new Bank('aa');
+bank1.newCustomer({ firstName: 'Svetlin', lastName: 'Nakov', personalId: 1111111 });
+bank1.newCustomer({ firstName: 'Svetlin', lastName: 'Nakov', personalId: 1111111 });

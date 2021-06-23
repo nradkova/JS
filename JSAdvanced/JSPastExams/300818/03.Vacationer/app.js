@@ -51,15 +51,11 @@ class Vacationer {
     }
 
     generateIDNumber() {
-        let id = 231 * this.fullName.firstName.charCodeAt(0)
-            + 139 * this.fullName.middleName.length;
+        let id = 231 * this.fullName.firstName.charCodeAt(0) + 139 * this.fullName.middleName.length;
         let lastChar = this.fullName.lastName[this.fullName.lastName.length - 1];
-        if (lastChar == "a" || lastChar == "e" || lastChar == "o" ||
-            lastChar == "i" || lastChar == "u") {
-            id += '8';
-        } else {
-            id += '7';
-        }
+        ['a', 'e', 'o', 'i', 'u'].includes(lastChar)
+            ? id += '8'
+            : id += '7';
         return id;
     }
 
@@ -94,34 +90,6 @@ Expiration Date: ${this.creditCard.expirationDate}
 Security Number: ${this.creditCard.securityNumber}`;
     }
 };
-
-// // Initialize vacationers with 2 and 3 parameters
-// let vacationer1 = new Vacationer(["Vania", "Ivanova", "Zhivkova"]);
-// let vacationer2 = new Vacationer(["Tania", "Ivanova", "Zhivkova"],
-//     [123456789, "10/01/2018", 777]);
-
-// // Should throw an error (Invalid full name)
-// try {
-//     let vacationer3 = new Vacationer(["Vania", "Ivanova", "ZhiVkova"]);
-// } catch (err) {
-//     console.log("Error: " + err.message);
-// }
-
-// // Should throw an error (Missing credit card information)
-// try {
-//     let vacationer3 = new Vacationer(["Zdravko", "Georgiev", "Petrov"]);
-//     vacationer3.addCreditCardInfo([123456789, "20/10/2018"]);
-// } catch (err) {
-//     console.log("Error: " + err.message);
-// }
-
-// vacationer1.addDestinationToWishList('Spain');
-// vacationer1.addDestinationToWishList('Germany');
-// vacationer1.addDestinationToWishList('Bali');
-
-// // Return information about the vacationers
-// console.log(vacationer1.getVacationerInfo());
-// console.log(vacationer2.getVacationerInfo());
 
 let classInstance2 = new Vacationer(["Tania", "Ivanova", "Zhivkova"], [123456789, "10/01/2018", 777])
 classInstance2.addDestinationToWishList('Spain');

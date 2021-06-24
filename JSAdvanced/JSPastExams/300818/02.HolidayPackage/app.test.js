@@ -31,6 +31,7 @@ describe('test HolidayPackage', () => {
             assert.throws(() => pack.insuranceIncluded(6))
         })
     });
+
     describe('test showVacationers functionality', () => {
         it('showVacationers works correctly', () => {
             assert.equal("No vacationers are added yet", pack.showVacationers());
@@ -39,6 +40,7 @@ describe('test HolidayPackage', () => {
             assert.equal(`Vacationers:\n${pack.vacationers.join('\n')}`, pack.showVacationers());
         })
     });
+
     describe('test addVacationer functionality', () => {
         it('addVacationer works correctly', () => {
             pack.addVacationer(first);
@@ -51,6 +53,7 @@ describe('test HolidayPackage', () => {
             assert.throws(() => pack.addVacationer('aaa'));
         })
     });
+    
     describe('test generateHolidayPackage functionality', () => {
         it('generateHolidayPackage works correctly', () => {
             pack.addVacationer(first);
@@ -75,14 +78,6 @@ describe('test HolidayPackage', () => {
                 newPack.showVacationers() + "\n" +
                 "Price: " + 400;
             assert.equal(expected, newPack.generateHolidayPackage());
-
-        //    let otherPack=new HolidayPackage('aaa','Winter');
-        //    otherPack.addVacationer(first);
-        //     expected = "Holiday Package Generated\n" +
-        //         "Destination: " + otherPack.destination + "\n" +
-        //         otherPack.showVacationers() + "\n" +
-        //         "Price: " + 600;
-        //     assert.equal(expected, otherPack.generateHolidayPackage());
         })
         it('addVacationer throws zero vacationers', () => {
             assert.throws(() => pack.generateHolidayPackage());

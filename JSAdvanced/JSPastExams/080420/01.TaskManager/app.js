@@ -16,7 +16,8 @@ function solve() {
         const command = event.target.textContent.toLowerCase() + 'Func';
         if (manager[command]){
              manager[command](event.target);
-        }});
+        }
+    })
 
     function finishFunc(currentBtn) {
         const article = currentBtn.parentNode.parentNode;
@@ -49,14 +50,9 @@ function solve() {
             || dateTag.value === '') {
             return;
         }
-        const task = taskTag.value;
-        const description = descriptionTag.value;
-        const date = dateTag.value;
-
-        taskTag.value = '';
-        descriptionTag.value = '';
-        dateTag.value = '';
-
+        const [task,description,date]=[taskTag.value,descriptionTag.value,dateTag.value];
+        [taskTag,descriptionTag,dateTag].forEach(t =>t.value='');
+        
         const article = createArticle(task, description, date);
         open.children[1].appendChild(article);
     }
@@ -67,27 +63,28 @@ function solve() {
         article.appendChild(createCustomEl('p', `Description: ${description}`));
         article.appendChild(createCustomEl('p', `Due Date: ${date}`));
 
-        const div = createCustomEl('div');
-        div.classList.add('flex')
+        const div = createCustomEl('div',undefined,['flex']);
+        article.appendChild(div);
 
-        const stBtn = createCustomEl('button', 'Start');
-        stBtn.classList.add('green');
+        const stBtn = createCustomEl('button', 'Start',['green']);
         div.appendChild(stBtn);
 
-        const delBtn = createCustomEl('button', 'Delete');
-        delBtn.classList.add('red');
+        const delBtn = createCustomEl('button', 'Delete',['red']);
         div.appendChild(delBtn);
 
-        article.appendChild(div);
         return article;
     }
 
-    function createCustomEl(type, content) {
-        const el = document.createElement(type);
-        if (!content) { return el; }
-        type === 'input'
-            ? el.value = content
-            : el.textContent = content;
+   function createCustomEl(type, content, classArr) {
+        let el = document.createElement(type);
+        if (content) {
+            type === 'input' || type === 'textarea'
+                ? el.value = content
+                : el.textContent = content;
+        }
+        if (classArr) {
+            el.classList.add(...classArr);
+        }
         return el;
     }
 }

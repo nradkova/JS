@@ -1,13 +1,23 @@
 function solve() {
-   const body = document.querySelector('body');
    const form = document.querySelector('form')
-   const [autorTag, titleTag, categoryTag, contentTag] = form.querySelectorAll('p :nth-child(2)');
+   const [autorTag, titleTag, categoryTag, contentTag] = Array.from(form.querySelectorAll('p :nth-child(2)'));
 
-   document.querySelector('button.create').addEventListener('click', createFunc);
+   document.querySelector('.site-content').addEventListener('click', onClick);
 
-   function createFunc(event) {
+   function onClick(event) {
       event.preventDefault();
+      if (event.target.className === 'btn create') {
+         createFunc();
+      }
+      if (event.target.className === 'btn delete') {
+         delFunc(event.target);
+      }
+      if (event.target.className === 'btn archive') {
+         archFunc(event.target);
+      }
+   }
 
+   function createFunc() {
       const article = createCustomEl('article');
       article.appendChild(createCustomEl('h1', titleTag.value));
 
@@ -36,25 +46,21 @@ function solve() {
       titleTag.value = '';
       contentTag.value = '';
       categoryTag.value = '';
+   }
 
-      delBtn.addEventListener('click', deleteFunc);
-      arcBtn.addEventListener('click', archiveFunc);
+   function delFunc(target) {
+      target.parentNode.parentNode.remove();
    }
-   function deleteFunc(event) {
-      event.target.parentNode.parentNode.remove();
-   }
-   function archiveFunc(event) {
-      const article = event.target.parentNode.parentNode;
+   
+   function archFunc(target) {
+      const article = target.parentNode.parentNode;
       const articleName = article.firstChild.textContent;
-
       const ol = document.querySelector('.archive-section ol');
       ol.appendChild(createCustomEl('li', articleName));
-
       const liArr = Array.from(ol.children)
-            .sort((a, b) => a.textContent.localeCompare(b.textContent));
+         .sort((a, b) => a.textContent.localeCompare(b.textContent));
       ol.innerHTML = '';
       liArr.forEach(l => ol.appendChild(l));
-
       document.querySelector('main section').removeChild(article);
    }
 
@@ -66,5 +72,4 @@ function solve() {
          : el.textContent = content;
       return el;
    };
-};
-
+}

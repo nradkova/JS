@@ -19,33 +19,27 @@ function solve() {
 
    function createFunc() {
       const article = createCustomEl('article');
-      article.appendChild(createCustomEl('h1', titleTag.value));
+      const h1=createCustomEl('h1', titleTag.value);
 
-      const categoryEl = createCustomEl('p', 'Category: ');
-      categoryEl.appendChild(createCustomEl('strong', categoryTag.value));
-      article.appendChild(categoryEl);
+      const pCategory = createCustomEl('p', 'Category: ');
+      pCategory.appendChild(createCustomEl('strong', categoryTag.value));
 
-      const creatorEl = createCustomEl('p', 'Creator: ');
-      creatorEl.appendChild(createCustomEl('strong', autorTag.value));
-      article.appendChild(creatorEl);
+      const pCreator = createCustomEl('p', 'Creator: ');
+      pCreator.appendChild(createCustomEl('strong', autorTag.value));
 
-      article.appendChild(createCustomEl('p', contentTag.value));
+      const pContent = createCustomEl('p', contentTag.value);
+      
       const div = createCustomEl('div');
       div.classList.add('buttons');
-      article.appendChild(div);
-
-      const delBtn = createCustomEl('button', 'Delete')
-      delBtn.classList.add('btn', 'delete');
-      const arcBtn = createCustomEl('button', 'Archive')
-      arcBtn.classList.add('btn', 'archive');
+      const delBtn = createCustomEl('button', 'Delete',['btn', 'delete'])
       div.appendChild(delBtn);
+      const arcBtn = createCustomEl('button', 'Archive',['btn', 'archive'])
       div.appendChild(arcBtn);
 
+      [h1,pCategory, pCreator, pContent, div].forEach(t => article.appendChild(t));
+      [autorTag, titleTag, contentTag, categoryTag].forEach(t => t.value = '');
+     
       document.querySelector('main section').appendChild(article);
-      autorTag.value = '';
-      titleTag.value = '';
-      contentTag.value = '';
-      categoryTag.value = '';
    }
 
    function delFunc(target) {
@@ -58,18 +52,22 @@ function solve() {
       const ol = document.querySelector('.archive-section ol');
       ol.appendChild(createCustomEl('li', articleName));
       const liArr = Array.from(ol.children)
-         .sort((a, b) => a.textContent.localeCompare(b.textContent));
+               .sort((a, b) => a.textContent.localeCompare(b.textContent));
       ol.innerHTML = '';
       liArr.forEach(l => ol.appendChild(l));
       document.querySelector('main section').removeChild(article);
    }
 
-   function createCustomEl(type, content) {
+   function createCustomEl(type, content,classArr) {
       let el = document.createElement(type);
-      if (!content) { return el; }
-      type === 'input' || type === 'textarea'
-         ? el.value = content
-         : el.textContent = content;
+      if (content) {
+         type === 'input' || type === 'textarea'
+            ? el.value = content
+            : el.textContent = content;
+      }
+      if (classArr) {
+         el.classList.add(...classArr);
+      }
       return el;
-   };
-}
+   }
+};

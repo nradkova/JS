@@ -1,20 +1,21 @@
-let userId = undefined;
 function attachEvents() {
-    document.querySelector('#catches').innerHTML='';
-    document.querySelector('button.load').addEventListener('click', () => {
-        const token = sessionStorage.getItem('userToken');
-        if (token != null) {
-            const addBtn = document.querySelector('button.add');
-            addBtn.disabled = false;
-            addBtn.addEventListener('click', addCatch);
-        }
-        loadCatches();
-    });
+    document.querySelector('#catches').innerHTML = '';
+    const token = sessionStorage.getItem('userToken');
+    if (token) {
+        const addBtn = document.querySelector('button.add');
+        addBtn.disabled = false;
+        addBtn.addEventListener('click', addCatch);
+        
+        const logoutBtn = document.querySelector('[href="login.html"]');
+        logoutBtn.textContent = 'Logout';
+        logoutBtn.addEventListener('click', logout);
+    }
+    document.querySelector('button.load').addEventListener('click', loadCatches);
 }
 attachEvents();
+
 async function addCatch(event) {
     event.preventDefault();
-    const token = sessionStorage.getItem('userToken');
     const inputFields = event.target.parentNode.querySelectorAll('input');
     const entry = {
         angler: inputFields[0].value,
@@ -24,8 +25,7 @@ async function addCatch(event) {
         bait: inputFields[4].value,
         captureTime: inputFields[5].value
     }
-    userId = await postReguestCatch(entry, token);
-    console.log(userId)
+    await postReguestCatch(entry);
     inputFields.forEach(e => e.value = '');
     loadCatches();
 }
@@ -33,11 +33,6 @@ async function addCatch(event) {
 async function updateCatch(event) {
     event.preventDefault();
     const id = event.target.parentNode['data-id'];
-    const token = sessionStorage.getItem('userToken');
-    const ownerId = event.target.parentNode['data-ownerId'];
-    if (ownerId != userId) {
-       return alert('You are not creator of this catch!')
-    }
     const inputFields = event.target.parentNode.querySelectorAll('input');
     const entry = {
         angler: inputFields[0].value,
@@ -49,21 +44,16 @@ async function updateCatch(event) {
     }
     const confirmed = confirm('Catch info will be modified!')
     if (confirmed) {
-        await putRequestCatch(entry, token, id);
+        await putRequestCatch(entry, id);
     }
     loadCatches();
 }
 
 async function deleteCatch(event) {
     const id = event.target.parentNode['data-id'];
-    const ownerId = event.target.parentNode['data-ownerId'];
-    const token = sessionStorage.getItem('userToken');
-    if (ownerId != userId) {
-      return  alert('You are not creator of this catch!')
-    }
     const confirmed = confirm('Catch will be no longer available!')
     if (confirmed) {
-        await deleteRequestCatch(id, token);
+        await deleteRequestCatch(id);
     }
     loadCatches();
 }
@@ -75,16 +65,10 @@ async function loadCatches() {
     catches
         .map(previewCatch)
         .forEach(e => div.appendChild(e));
-    const token = sessionStorage.getItem('userToken');
-    if (token == null) {
-        return;
-    }
-    document.querySelectorAll('.update').forEach(e => e.disabled = false);
-    document.querySelectorAll('.delete').forEach(e => e.disabled = false);
 }
 
 function previewCatch(entry) {
-    return create('div', { className: 'catch', 'data-id': entry._id, 'data-ownerId': entry._ownerId },
+    const result = create('div', { className: 'catch', 'data-id': entry._id },
         create('label', {}, 'Angler'),
         create('input', { type: 'text', className: 'angler', value: entry.angler }),
         create('hr'),
@@ -103,43 +87,64 @@ function previewCatch(entry) {
         create('label', {}, 'Capture Time'),
         create('input', { type: 'number', className: 'captureTime', value: entry.captureTime }),
         create('hr'),
-        create('button', { disabled: true, className: 'update', onClick: updateCatch }, 'Update'),
-        create('button', { disabled: true, className: 'delete', onClick: deleteCatch }, 'Delete'));
+        create('button', { className: 'update', onClick: updateCatch }, 'Update'),
+        create('button', { className: 'delete', onClick: deleteCatch }, 'Delete'));
+    result
+        .querySelectorAll('button')
+        .forEach(e => sessionStorage.getItem('userId') === entry._ownerId ? e.disabled = false : e.disabled = true)
+    return result;
+}
+async function logout(event) {
+    event.preventDefault();
+    await logoutRequest();
+    sessionStorage.removeItem('userToken');
+    sessionStorage.removeItem('userId');
+    event.target.textContent = 'Login';
+    location.assign('./index.html');
 }
 
-async function putRequestCatch(entry, token, id) {
+async function putRequestCatch(entry, id) {
     return await request('http://localhost:3030/data/catches/' + id, {
         method: 'put',
         headers: {
             'Content-Type': 'application/json',
-            'X-Authorization': token
+            'X-Authorization': sessionStorage.getItem('userToken')
         },
         body: JSON.stringify(entry)
     })
 }
 
-async function deleteRequestCatch(id, token) {
+async function deleteRequestCatch(id) {
     return await request('http://localhost:3030/data/catches/' + id, {
         method: 'delete',
         headers: {
-            'X-Authorization': token
+            'X-Authorization': sessionStorage.getItem('userToken')
         }
     })
 }
-async function postReguestCatch(entry, token) {
-    const data = await request('http://localhost:3030/data/catches ', {
+
+async function postReguestCatch(entry) {
+    return await request('http://localhost:3030/data/catches ', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
-            'X-Authorization': token
+            'X-Authorization': sessionStorage.getItem('userToken')
         },
         body: JSON.stringify(entry)
     })
-    return data._ownerId;
 }
 
 async function getRequestCatches() {
     return await request('http://localhost:3030/data/catches');
+}
+
+async function logoutRequest() {
+    return await fetch('http:localhost:3030/users/logout', {
+        method: 'get',
+        headers: { 
+            'X-Authorization': sessionStorage.getItem('userToken') 
+        }
+    });
 }
 
 async function request(url, options) {

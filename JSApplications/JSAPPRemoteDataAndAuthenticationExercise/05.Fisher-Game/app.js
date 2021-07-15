@@ -139,7 +139,7 @@ async function getRequestCatches() {
 }
 
 async function logoutRequest() {
-    return await fetch('http:localhost:3030/users/logout', {
+    return await request('http://localhost:3030/users/logout', {
         method: 'get',
         headers: { 
             'X-Authorization': sessionStorage.getItem('userToken') 
@@ -153,7 +153,9 @@ async function request(url, options) {
         const error = await response.json();
         throw new Error(error.message)
     }
-    return await response.json();
+    if(!url.includes('logout')){
+        return await response.json();
+    }
 }
 
 function create(type, attributes, ...content) {

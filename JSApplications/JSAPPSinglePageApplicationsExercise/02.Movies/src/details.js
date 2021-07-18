@@ -63,7 +63,7 @@ async function getMovieDetailsPreview(movie) {
         event.target.style.display = 'none';
         await postLike(movie._id);
         likesCount++;
-        details.querySelector('span').textContent = 'Likes ' + likes;
+        details.querySelector('span').textContent = 'Likes ' + likesCount;
     }
 
     async function likesCountDisplay() {
@@ -72,6 +72,10 @@ async function getMovieDetailsPreview(movie) {
         return likes;
     }
     async function deleteMovie() {
+        const confirmed = confirm('Movie will be no more available!');
+        if (!confirmed) {
+            return;
+        }
         await deleteMovieRequest(movie._id);
         showHome();
     }

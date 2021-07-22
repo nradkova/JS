@@ -25,6 +25,7 @@ setupSection('form-sign-up', setupRegister);
 setupNav();
 showHome();
 
+document.querySelector('#views').remove();
 function setupSection(id, setup) {
     setup(main, document.getElementById(id))
 }
@@ -44,11 +45,13 @@ function setupNav() {
         event.preventDefault();
         showCreate();
     })
-    
+
     if (!sessionStorage.getItem('userToken')) {
         document.querySelector('#add-movie-button').style.display = 'none';
         document.querySelectorAll('nav .user').forEach(e => e.style.display = 'none');
         document.querySelectorAll('nav .guest').forEach(e => e.style.display = 'block');
+        document.querySelector('#greeting').parentNode.style.display = 'block';
+        document.querySelector('#greeting').textContent = 'Welcome, guest';
     } else {
         document.querySelector('#add-movie-button').style.display = 'block';
         document.querySelectorAll('nav .user').forEach(e => e.style.display = 'block');
@@ -70,6 +73,8 @@ async function logout() {
 
     document.querySelectorAll('nav .user').forEach(e => e.style.display = 'none');
     document.querySelectorAll('nav .guest').forEach(e => e.style.display = 'block');
+    document.querySelector('#greeting').parentNode.style.display = 'block';
+    document.querySelector('#greeting').textContent = 'Welcome, guest';
 
     showHome();
     document.querySelector('#add-movie-button').style.display = 'none';

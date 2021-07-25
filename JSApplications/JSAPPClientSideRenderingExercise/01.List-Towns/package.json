@@ -1,0 +1,17 @@
+{
+  "name": "01.List-Towns",
+  "version": "1.0.0",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^0.12.3",
+    "lit-html": "^1.4.1"
+  },
+  "keywords": [],
+  "dependencies": {},
+  "description": ""
+}

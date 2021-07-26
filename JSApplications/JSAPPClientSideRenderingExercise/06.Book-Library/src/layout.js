@@ -10,7 +10,7 @@ const rowTemplate = (book) => html`
     </td>
 </tr>`;
 
-const tableTemplate = (books) => html`
+const tableTemplate = (context,books) => html`
 <table>
     <thead>
         <tr>
@@ -19,7 +19,7 @@ const tableTemplate = (books) => html`
             <th>Action</th>
         </tr>
     </thead>
-    <tbody>
+    <tbody @click=${context.onClick}>
         ${books ? books.map(rowTemplate):''}
     </tbody>
 </table>
@@ -48,9 +48,9 @@ const addFormTemplate =  html`
 </form>
 `;
 
-const mainTemplate = (books, bookToEdit) => html`
-<button id="loadBooks">LOAD ALL BOOKS</button>
-${tableTemplate(books)}
+const mainTemplate = (context,books, bookToEdit) => html`
+<button @click=${context.loadBooks} id="loadBooks">LOAD ALL BOOKS</button>
+${tableTemplate(context,books)}
 ${bookToEdit ? editFormTemplate(bookToEdit) : addFormTemplate}
 `;
 

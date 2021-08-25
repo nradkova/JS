@@ -1,10 +1,11 @@
 module.exports = {
    async details(req, res) {
-        const cube=await req.storage.getById(req.params.id);
+       const id=req.params.id;
+        const cube=await req.storage.getById(id);
         if(cube){
             const ctx={
                 title:'Cubicle',
-                cube
+                cube,
             }
             res.render('details',ctx);
         }else{

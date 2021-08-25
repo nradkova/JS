@@ -10,12 +10,13 @@ async function init() {
         alert('Error reading datadase')
     }
 
-    return (req,res,next)=>{
-        req.storage={
+    return (req, res, next) => {
+        req.storage = {
             init,
             getAll,
             getById,
-            create
+            create,
+            edit
         }
         next();
     }
@@ -25,29 +26,58 @@ async function init() {
 //   "description": "string",
 //   "imageUrl": "string",
 //   "difficulty": "number"
-//},
+//}
 
-async function getAll() {
-    return Object.entries(data).map(([id, v]) => Object.assign({}, {id }, v));
+async function getAll(query) {
+    let cubes = Object.entries(data).map(([id, v]) => Object.assign({}, { id }, v));
+    if (query.search) {
+        cubes = cubes.filter(x => x.name.toLowerCase().includes(query.search.toLowerCase()));
+    }
+    if (query.from) {
+        cubes = cubes.filter(x => x.difficulty >= Number(query.from));
+    }
+    if (query.to) {
+        cubes = cubes.filter(x => x.difficulty <= Number(query.to));
+    }
+    return cubes;
 }
 
 async function getById(id) {
-    return data[id];
+    const cube = data[id];
+    if (cube) {
+        return Object.assign({}, { id }, cube)
+    }
+    return undefined;
 }
 
 async function create(cube) {
     const id = uniqid();
     data[id] = cube;
+    await exist();
+}
+
+async function edit(id, cube) {
+    console.log(data[id])
+    console.log(cube,'ddddd')
+
+    if(!data[id]){
+        throw new ReferenceError('No such data');
+    }
+    data[id] = cube;
+    await exist();
+}
+
+async function exist() {
     try {
-        await fs.writeFile('./models/data.json', JSON.stringify(data,null,2));
+        await fs.writeFile('./models/data.json', JSON.stringify(data, null, 2));
     } catch (error) {
         alert('Error writting out datadase')
     }
 }
-
-module.exports={
+module.exports = {
     init,
     getAll,
     getById,
-    create
+    create,
+    edit
 }

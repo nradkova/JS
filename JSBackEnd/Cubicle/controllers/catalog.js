@@ -1,10 +1,13 @@
 module.exports = {
-   async catalog(req, res) {
-        const cubes=await req.storage.getAll();
-        const ctx={
-            title:'Cubicle',
-            cubes
+    async catalog(req, res) {
+        const cubes = await req.storage.getAll(req.query);
+        const ctx = {
+            title: 'Cubicle',
+            cubes,
+            search: req.query.search || '',
+            from: req.query.from || '',
+            to: req.query.to || ''
         }
-        res.render('index',ctx);
+        res.render('catalog', ctx);
     }
 };

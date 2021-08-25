@@ -6,9 +6,12 @@
         <input type="number" name="to" class="difficulty" placeholder="Difficulty to..."value="to">
         <input type="submit" value="search">
       </form>
+      <div class="cube-list">
       {{#each cubes}}
       {{> cube}}
       {{else}}
       <span>No cubes in database.<a class="createLink" href="/create"> Create one</a></span>
       {{/each}}
+      </div>
       
+      <script src="/js/app.js" type="module"></script>

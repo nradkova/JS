@@ -240,6 +240,10 @@ footer {
     color: blue;
     text-decoration: none;
 }
+.cube-description{
+    display: none;
+    padding: 10px;
+}
 
 /*Animations & Transitions
 */

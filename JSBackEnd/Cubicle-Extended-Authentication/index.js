@@ -6,6 +6,8 @@ const routesConfig = require('./config/routes');
 const storage  = require('./middlewares/storage');
 const logger=require('./middlewares/logger');
 
+
+
 start();
 
 async function start() {
@@ -14,6 +16,7 @@ async function start() {
 
     expressConfig(app);
     
+   
     app.use(logger());
 
     await databaseConfig(app);

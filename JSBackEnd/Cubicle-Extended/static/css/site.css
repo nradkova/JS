@@ -252,6 +252,19 @@ footer {
     border-radius: 4px;
 }
 
+.accessories .accessory{
+    display: inline-block;
+    background-color: #f3f3f2;
+    width: 20%;
+    padding: 1%;
+    margin: 1%;
+}
+
+.accessories, .italic{
+    text-align: center;
+    font-style: italic;
+}
+
 /*Animations & Transitions
 */
 

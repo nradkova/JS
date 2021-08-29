@@ -7,7 +7,8 @@ const userService = require('../services/user');
 module.exports = () => (req, res, next) => {
     req.auth = {
         register,
-        login
+        login,
+        logout
     };
 
     if(readToken(req)){
@@ -38,6 +39,10 @@ module.exports = () => (req, res, next) => {
         req.user = createToken(user);
     }
 
+    async function logout(){
+        res.clearCookie(COOKIE_NAME);
+    }
+
     function createToken(user) {
         const userViewModel = { _id: user._id, username: user.username };
         const token = jwt.sign(userViewModel, TOKEN_SECRET);
@@ -51,7 +56,7 @@ module.exports = () => (req, res, next) => {
             try {
                 const userData = jwt.verify(token, TOKEN_SECRET);
                 req.user=userData;
-                return true;
+                res.locals.user=userData;
             } catch (error) {
                 res.clearCookie(COOKIE_NAME);
                 res.redirect('/auth/login');

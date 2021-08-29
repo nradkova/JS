@@ -7,11 +7,10 @@ module.exports = {
         };
         try {
             await req.storage.createComment(cubeId,comment);
-            res.redirect('/details/'+cubeId);
-
+            res.redirect('/products');
         } catch (error) {
             if (error.name == "ValidationError") {
-                return res.render('create', { title: 'Create Cube Page', error: 'All fields are required. Image URL must be a valid URL.' })
+                return res.render('details', { title: 'Details Cube Page', error: 'All fields are required.' })
             }
             res.redirect('/404');
         }

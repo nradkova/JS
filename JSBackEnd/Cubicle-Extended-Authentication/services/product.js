@@ -13,9 +13,24 @@ async function getAll(query) {
 }
 
 async function getById(id) {
-    const cube = await Cube.findById(id).populate('comments').populate('accessories').lean();
+    const cube = await Cube.findById(id)
+        .populate('comments')
+        .populate('accessories')
+        .populate('creator')
+        .lean();
     if (cube) {
-        return cube;
+        const viewModel = {
+            _id: cube._id,
+            name: cube.name,
+            description: cube.description,
+            imageUrl: cube.imageUrl,
+            difficulty: cube.difficulty,
+            comments: cube.comments,
+            accessories: cube.accessories,
+            creator: cube.creator.username,
+            creatorId:cube.creator._id.toString()
+        }
+        return viewModel;
     }
     return undefined;
 }
@@ -34,25 +49,33 @@ async function edit(id, cube) {
     return current.save();
 }
 
-async function createComment(cubeId,data) {
+async function del(id) {
+    const current = await Cube.findById(id);
+    if (!current) {
+        throw new ReferenceError('No such data');
+    }
+  return Cube.deleteOne({_id:id});
+}
+
+async function createComment(cubeId, data) {
     const cube = await Cube.findById(cubeId);
     if (!cube) {
         throw new ReferenceError('No such data');
     }
-    const comment=new Comment(data);
+    const comment = new Comment(data);
     await comment.save();
     cube.comments.push(comment);
     await cube.save();
 }
 
-async function attachAccessory(cubeId,accessoryId) {
+async function attachAccessory(cubeId, accessoryId) {
     const cube = await Cube.findById(cubeId);
     const accessory = await Accessory.findById(accessoryId);
-    if (!cube||!accessory) {
+    if (!cube || !accessory) {
         throw new ReferenceError('No such data');
     }
     cube.accessories.push(accessory);
-    await cube.save();
+    return cube.save();
 }
 
 module.exports = {
@@ -61,5 +84,6 @@ module.exports = {
     create,
     edit,
     createComment,
-    attachAccessory
+    attachAccessory,
+    del
 }

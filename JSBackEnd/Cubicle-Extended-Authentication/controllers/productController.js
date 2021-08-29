@@ -1,32 +1,32 @@
 const { Router } = require('express');
+const { isAuth, isOwner } = require('../middlewares/guards');
+const { preloadCube } = require('../middlewares/preload');
 const router = Router();
 
-router.get('/', async (req, res) => {
-    const cubes = await req.storage.getAll(req.query);
+router.get('', async (req, res) => {
+    const cubes = await req.storage.getAll({});
     const ctx = {
         title: 'Cubicle',
-        cubes,
-        search: req.query.search || '',
-        from: req.query.from || '',
-        to: req.query.to || ''
+        cubes
     }
     res.render('catalog', ctx);
 });
 
-router.get('/create', (req, res) => {
+router.get('/create', isAuth(), (req, res) => {
     res.render('create', { title: 'Create Cube Page' });
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', isAuth(), async (req, res) => {
     const cube = {
         name: req.body.name,
         description: req.body.description,
         imageUrl: req.body.imageUrl,
-        difficulty: Number(req.body.difficulty)
+        difficulty: Number(req.body.difficulty),
+        creator: req.user._id
     };
     try {
         await req.storage.create(cube);
-        res.redirect('/');
+        res.redirect('/products');
 
     } catch (error) {
         if (error.name == "ValidationError") {
@@ -36,10 +36,10 @@ router.post('/create', async (req, res) => {
     }
 });
 
-router.get('/details/:id', async (req, res) => {
-    const id = req.params.id;
-    const cube = await req.storage.getById(id);
+router.get('/details/:id', preloadCube(), async (req, res) => {
+    const cube = req.data.cube;
     if (cube) {
+        cube.isOwner = req.user && (cube.creatorId == req.user._id);
         const ctx = {
             title: 'Cubicle',
             cube
@@ -50,8 +50,8 @@ router.get('/details/:id', async (req, res) => {
     }
 });
 
-router.get('/edit/:id', async (req, res) => {
-    const cube = await req.storage.getById(req.params.id);
+router.get('/edit/:id', preloadCube(), isOwner(), async (req, res) => {
+    const cube = req.data.cube;
     if (cube) {
         cube['level' + cube.difficulty] = true;
         const ctx = {
@@ -64,16 +64,17 @@ router.get('/edit/:id', async (req, res) => {
     }
 });
 
-router.post('/edit/:id', async (req, res) => {
+router.post('/edit/:id', preloadCube(), isOwner(), async (req, res) => {
     const cube = {
         name: req.body.name,
         description: req.body.description,
         imageUrl: req.body.imageUrl,
-        difficulty: Number(req.body.difficulty)
+        difficulty: Number(req.body.difficulty),
+        creator: req.user._id
     };
     try {
         await req.storage.edit(req.params.id, cube);
-        res.redirect('/');
+        res.redirect('/products');
     } catch (error) {
         if (error.name == "ValidationError") {
             cube._id = req.params.id;
@@ -88,8 +89,8 @@ router.post('/edit/:id', async (req, res) => {
     }
 });
 
-router.get('/delete/:id', async (req, res) => {
-    const cube = await req.storage.getById(req.params.id);
+router.get('/delete/:id', preloadCube(), isOwner(), async (req, res) => {
+    const cube = req.data.cube;
     if (cube) {
         cube['level' + cube.difficulty] = true;
         const ctx = {
@@ -102,29 +103,13 @@ router.get('/delete/:id', async (req, res) => {
     }
 });
 
-router.post('/delete/:id', async (req, res) => {
-    // const cube = {
-    //     name: req.body.name,
-    //     description: req.body.description,
-    //     imageUrl: req.body.imageUrl,
-    //     difficulty: Number(req.body.difficulty)
-    // };
-    // try {
-    //     await req.storage.edit(req.params.id, cube);
-    //     res.redirect('/');
-    // } catch (error) {
-    //     if (error.name == "ValidationError") {
-    //         cube._id = req.params.id;
-    //         const ctx = {
-    //             title: 'Edit Cube Page',
-    //             error: 'All fields are required. Image URL must be a valid URL.',
-    //             cube
-    //         }
-    //         return res.render('delete', ctx)
-    //     }
-    //     res.redirect('/404');
-    // }
-    res.redirect('/products')
+router.post('/delete/:id', preloadCube(), isOwner(), async (req, res) => {
+    try {
+        await req.storage.del(req.params.id);
+        res.redirect('/products');
+    } catch (error) {
+        res.redirect('/404');
+    }
 });
 
 router.get('/details/attach/:id', async (req, res) => {
